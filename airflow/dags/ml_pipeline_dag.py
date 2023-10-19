@@ -266,7 +266,7 @@ def ml_pipeline():
     @task.branch(task_id="if_run_hyperparameter_tuning_branching")
     def if_run_hyperparameter_tuning_branching(run_hyperparameter_tuning: bool) -> bool:
         """Task used to branch between hyperparameter tuning and skipping it."""
-        if run_hyperparameter_tuning is True:
+        if run_hyperparameter_tuning:
             return ["branch_run_hyperparameter_tuning"]
         else:
             return ["branch_skip_hyperparameter_tuning"]

@@ -69,7 +69,7 @@ def _extract_records_from_file_url(url: str, export_start: datetime.datetime, ex
     if cache_dir is None:
         cache_dir = settings.OUTPUT_DIR / "data"
         cache_dir.mkdir(parents=True, exist_ok=True)
-        
+
     file_path = cache_dir / "ConsumptionDE35Hour.csv"
     if not file_path.exists():
         logger.info(f"Downloading data from: {url}")
@@ -82,10 +82,10 @@ def _extract_records_from_file_url(url: str, export_start: datetime.datetime, ex
             )
 
             return None
-        
+
         if response.status_code != 200:
             raise ValueError(f"Response status = {response.status_code}. Could not download the file.")
-    
+
         with file_path.open("w") as f:
             f.write(response.text)
 
@@ -97,12 +97,13 @@ def _extract_records_from_file_url(url: str, export_start: datetime.datetime, ex
         data = pd.read_csv(file_path, delimiter=";")
     except EmptyDataError:
         file_path.unlink(missing_ok=True)
-        
+
         raise ValueError(f"Downloaded file at {file_path} is empty. Could not load it into a DataFrame.")
 
-    records = data[(data["HourUTC"] >= export_start.strftime(datetime_format)) & (data["HourUTC"] < export_end.strftime(datetime_format))]
-
-    return records
+    return data[
+        (data["HourUTC"] >= export_start.strftime(datetime_format))
+        & (data["HourUTC"] < export_end.strftime(datetime_format))
+    ]
 
 
 def from_api(
@@ -158,7 +159,7 @@ def _extract_records_from_api_url(url: str, export_start: datetime.datetime, exp
         "end": export_end.strftime("%Y-%m-%dT%H:%M"),
     }
     url = URL(url) % query_params
-    url = str(url)
+    url = url
     logger.info(f"Requesting data from API with URL: {url}")
     response = requests.get(url)
     logger.info(f"Response received from API with status code: {response.status_code} ")
@@ -174,9 +175,7 @@ def _extract_records_from_api_url(url: str, export_start: datetime.datetime, exp
         return None
 
     records = response["records"]
-    records = pd.DataFrame.from_records(records)
-
-    return records
+    return pd.DataFrame.from_records(records)
 
 def _compute_extraction_window(export_end_reference_datetime: datetime.datetime, days_delay: int, days_export: int) -> Tuple[datetime.datetime, datetime.datetime]:
     """Compute the extraction window relative to 'export_end_reference_datetime' and take into consideration the maximum and minimum data points available in the dataset."""
@@ -186,14 +185,9 @@ def _compute_extraction_window(export_end_reference_datetime: datetime.datetime,
         export_end_reference_datetime = datetime.datetime(
             2023, 6, 30, 21, 0, 0
         ) + datetime.timedelta(days=days_delay)
-        export_end_reference_datetime = export_end_reference_datetime.replace(
-            minute=0, second=0, microsecond=0
-        )
-    else:
-        export_end_reference_datetime = export_end_reference_datetime.replace(
-            minute=0, second=0, microsecond=0
-        )
-
+    export_end_reference_datetime = export_end_reference_datetime.replace(
+        minute=0, second=0, microsecond=0
+    )
     # TODO: Change the API source, until then we have to clamp the export_end_reference_datetime to the last day of June 2023 to simulate the same behavior.
     expiring_dataset_datetime = datetime.datetime(2023, 6, 30, 21, 0, 0) + datetime.timedelta(
         days=days_delay

@@ -22,9 +22,7 @@ def get_logger(name: str) -> logging.Logger:
     """
 
     logging.basicConfig(level=logging.INFO)
-    logger = logging.getLogger(name)
-
-    return logger
+    return logging.getLogger(name)
 
 
 def load_model(model_path: Union[str, Path]):

@@ -16,9 +16,7 @@ def get_logger(name: str) -> logging.Logger:
     """
 
     logging.basicConfig(level=logging.INFO)
-    logger = logging.getLogger(name)
-
-    return logger
+    return logging.getLogger(name)
 
 
 def save_json(data: dict, file_name: str, save_dir: str = settings.OUTPUT_DIR):

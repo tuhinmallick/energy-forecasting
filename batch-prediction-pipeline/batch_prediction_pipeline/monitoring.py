@@ -28,7 +28,7 @@ def compute(feature_view_version: Optional[int] = None) -> None:
     logger.info("Loading old predictions...")
     bucket = utils.get_bucket()
     predictions = utils.read_blob_from(
-        bucket=bucket, blob_name=f"predictions_monitoring.parquet"
+        bucket=bucket, blob_name="predictions_monitoring.parquet"
     )
     if predictions is None or len(predictions) == 0:
         logger.info(
@@ -107,16 +107,14 @@ def compute(feature_view_version: Optional[int] = None) -> None:
 
     logger.info("Saving new metrics...")
     utils.write_blob_to(
-        bucket=bucket,
-        blob_name=f"metrics_monitoring.parquet",
-        data=metrics,
+        bucket=bucket, blob_name="metrics_monitoring.parquet", data=metrics
     )
     latest_observations = latest_observations.rename(
         columns={"energy_consumption_observations": "energy_consumption"}
     )
     utils.write_blob_to(
         bucket=bucket,
-        blob_name=f"y_monitoring.parquet",
+        blob_name="y_monitoring.parquet",
         data=latest_observations[["energy_consumption"]],
     )
     logger.info("Successfully saved new metrics.")

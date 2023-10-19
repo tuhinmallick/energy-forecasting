@@ -103,9 +103,7 @@ def load_model_from_model_registry(project, model_version: int):
     model_dir = model_registry_reference.download()
     model_path = Path(model_dir) / "best_model.pkl"
 
-    model = utils.load_model(model_path)
-
-    return model
+    return utils.load_model(model_path)
 
 
 def forecast(model, X: pd.DataFrame, fh: int = 24):
@@ -140,9 +138,7 @@ def forecast(model, X: pd.DataFrame, fh: int = 24):
     X_forecast["area_exog"] = X_forecast.index.get_level_values(0)
     X_forecast["consumer_type_exog"] = X_forecast.index.get_level_values(1)
 
-    predictions = model.predict(X=X_forecast)
-
-    return predictions
+    return model.predict(X=X_forecast)
 
 
 def save(X: pd.DataFrame, y: pd.DataFrame, predictions: pd.DataFrame):
@@ -180,10 +176,10 @@ def save_for_monitoring(predictions: pd.DataFrame, start_datetime: datetime):
     bucket = utils.get_bucket()
 
     cached_predictions = utils.read_blob_from(
-        bucket=bucket, blob_name=f"predictions_monitoring.parquet"
+        bucket=bucket, blob_name="predictions_monitoring.parquet"
     )
     has_cached_predictions = cached_predictions is not None
-    if has_cached_predictions is True:
+    if has_cached_predictions:
         # Merge predictions with cached predictions.
         cached_predictions.index = cached_predictions.index.set_levels(
             pd.to_datetime(cached_predictions.index.levels[2], unit="h").to_period("H"),
@@ -216,7 +212,7 @@ def save_for_monitoring(predictions: pd.DataFrame, start_datetime: datetime):
 
     utils.write_blob_to(
         bucket=bucket,
-        blob_name=f"predictions_monitoring.parquet",
+        blob_name="predictions_monitoring.parquet",
         data=predictions,
     )
     logger.info(f"Successfully cached predictions forecasted before {start_datetime}.")
