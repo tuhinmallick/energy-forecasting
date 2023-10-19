@@ -83,8 +83,8 @@ def run_sweep(y_train: pd.DataFrame, X_train: pd.DataFrame, fh: int):
     """Runs a single hyperparameter optimization step (train + CV eval) using W&B sweeps."""
 
     with init_wandb_run(
-        name="experiment", job_type="hpo", group="train", add_timestamp_to_name=True
-    ) as run:
+            name="experiment", job_type="hpo", group="train", add_timestamp_to_name=True
+        ) as run:
         run.use_artifact("split_train:latest")
 
         config = wandb.config
@@ -99,11 +99,7 @@ def run_sweep(y_train: pd.DataFrame, X_train: pd.DataFrame, fh: int):
             "results": results,
             "config": config,
         }
-        artifact = wandb.Artifact(
-            name=f"config",
-            type="model",
-            metadata=metadata,
-        )
+        artifact = wandb.Artifact(name="config", type="model", metadata=metadata)
         run.log_artifact(artifact)
 
         run.finish()

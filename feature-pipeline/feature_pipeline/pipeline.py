@@ -38,7 +38,7 @@ def run(
           A dictionary containing metadata of the pipeline.
     """
 
-    logger.info(f"Extracting data from API.")
+    logger.info("Extracting data from API.")
     data, metadata = extract.from_file(
         export_end_reference_datetime, days_delay, days_export, url
     )
@@ -49,7 +49,7 @@ def run(
         )
     logger.info("Successfully extracted data from API.")
 
-    logger.info(f"Transforming data.")
+    logger.info("Transforming data.")
     data = transform(data)
     logger.info("Successfully transformed data.")
 
@@ -57,7 +57,7 @@ def run(
     validation_expectation_suite = validation.build_expectation_suite()
     logger.info("Successfully built validation expectation suite.")
 
-    logger.info(f"Validating data and loading it to the feature store.")
+    logger.info("Validating data and loading it to the feature store.")
     load.to_feature_store(
         data,
         validation_expectation_suite=validation_expectation_suite,
@@ -66,7 +66,7 @@ def run(
     metadata["feature_group_version"] = feature_group_version
     logger.info("Successfully validated data and loaded it to the feature store.")
 
-    logger.info(f"Wrapping up the pipeline.")
+    logger.info("Wrapping up the pipeline.")
     utils.save_json(metadata, file_name="feature_pipeline_metadata.json")
     logger.info("Done!")
 

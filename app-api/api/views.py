@@ -101,14 +101,12 @@ async def get_predictions(area: int, consumer_type: int) -> Any:
     preds_datetime_utc = preds_df.index.get_level_values("datetime_utc").to_list()
     preds_energy_consumption = preds_df["energy_consumption"].to_list()
 
-    results = {
+    return {
         "datetime_utc": datetime_utc,
         "energy_consumption": energy_consumption,
         "preds_datetime_utc": preds_datetime_utc,
         "preds_energy_consumption": preds_energy_consumption,
     }
-
-    return results
 
 
 @api_router.get(
@@ -186,11 +184,9 @@ async def get_predictions(area: int, consumer_type: int) -> Any:
         "energy_consumption"
     ].to_list()
 
-    results = {
+    return {
         "y_monitoring_datetime_utc": y_monitoring_datetime_utc,
         "y_monitoring_energy_consumption": y_monitoring_energy_consumption,
         "predictions_monitoring_datetime_utc": predictions_monitoring_datetime_utc,
         "predictions_monitoring_energy_consumptionc": predictions_monitoring_energy_consumptionc,
     }
-
-    return results

@@ -93,9 +93,7 @@ def get_logger(name: str) -> logging.Logger:
     """
 
     logging.basicConfig(level=logging.INFO)
-    logger = logging.getLogger(name)
-
-    return logger
+    return logging.getLogger(name)
 
 
 def init_wandb_run(
@@ -114,7 +112,7 @@ def init_wandb_run(
     if add_timestamp_to_name:
         name = f"{name}_{pd.Timestamp.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
-    run = wandb.init(
+    return wandb.init(
         project=project,
         entity=entity,
         name=name,
@@ -124,8 +122,6 @@ def init_wandb_run(
         reinit=reinit,
         resume=resume,
     )
-
-    return run
 
 
 def check_if_artifact_exists(
